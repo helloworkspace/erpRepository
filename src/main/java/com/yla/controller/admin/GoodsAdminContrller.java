@@ -88,7 +88,27 @@ public class GoodsAdminContrller {
 	}
 	
 	
-	
+	@RequestMapping("/otherList")
+	public Map<String,Object> otherlist(Goods goods,@RequestParam(value="page",required=false)Integer page,@RequestParam(value="rows",required=false)Integer rows)throws Exception{
+		//根据条件查询出所有物品
+		Map<String, Object> resultMap = new HashMap<>();
+		List<Goods> goodsList=goodsService.list(goods, page, rows, Direction.ASC, "id");
+		//获得物品分类的id的集合
+		List<Integer> typeList = getGoodsTypeIdList(3);		//改这里
+		
+		//过滤出属于该分类下的物品
+		List<Goods> list = new ArrayList<Goods>();
+		for(int i=0; i<goodsList.size(); i++){
+			if(typeContains(typeList, goodsList.get(i).getType().getId())){
+				list.add(goodsList.get(i));
+			}
+		}
+		Long total = Integer.valueOf(list.size()).longValue();
+		resultMap.put("rows", list);
+		resultMap.put("total", total);
+		logService.save(new Log(Log.SEARCH_ACTION,"查询物品信息")); // 写入日志
+		return resultMap;
+	}
 	
 	
 	
