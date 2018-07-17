@@ -11,12 +11,30 @@
 <script type="text/javascript">
 
 	var url;
-
+	/*
 	function searchGoods(){
 		$("#dg").datagrid('load',{
 			"codeOrName":$("#s_codeOrName").val() 
 		});
 	}
+	*/
+	
+	/**
+	*搜索商品
+	*/
+	function searchGoods(){
+		//window.alert(""+$('#brand2').combobox('getValue'));
+		$("#dg2").datagrid('load',{
+			//"type.id":$("#typeId2").val(),
+			"brand":$('#brand2').combobox('getValue'),
+			"warehouse":$('#warehouse2').combobox('getValue'),
+			"model":$('#model2').combobox('getValue'),
+			"codeOrName":$("#s_name").val() 
+		});
+	}
+	
+	
+	
 	
 	function formatGoodsTypeName(val,row){
 		return row.type.name;
@@ -24,9 +42,11 @@
 	
 	function openStorageDialog(type){
 		var selectedRows;
+		/*
 		if(type==1){
 			selectedRows=$("#dg").datagrid("getSelections");
-		}else if(type==2){
+		}else */
+		if(type==2){
 			selectedRows=$("#dg2").datagrid("getSelections");
 		}
 		if(selectedRows.length!=1){
@@ -61,7 +81,7 @@
 				if(result.success){
 					resetValue();
 					$("#dlg").dialog("close");
-					$("#dg").datagrid("reload");
+					//$("#dg").datagrid("reload");
 					$("#dg2").datagrid("reload");
 				}else{
 					$.messager.alert("系统提示",result.errorInfo);
@@ -94,7 +114,7 @@
 				if(r){
 					$.post("/admin/goods/deleteStock",{id:id},function(result){
 						if(result.success){
-							 $("#dg").datagrid("reload");
+							 //$("#dg").datagrid("reload");
 							 $("#dg2").datagrid("reload");
 						}else{
 							$.messager.alert("系统提示","<font color=red>"+result.errorInfo+"</font>");
@@ -106,7 +126,7 @@
 	
 	
 	$(function () {  
-		 
+		 /*
 		 $("#dg").datagrid({  
 		        //双击事件  
 		        onDblClickRow: function (index, row) {  
@@ -117,7 +137,7 @@
 		    		url="/admin/goods/saveStore?id="+row.id;
 		        }  
 		    });  
-		 
+		 */
 		 
 		 
 		 
@@ -140,10 +160,12 @@
 </script>
 </head>
 <body class="easyui-layout" style="padding-top: 2px">
+
+<!--  
 <div data-options="region:'west'" style="width:600px" split=true>
 		<table id="dg" title="商品信息" class="easyui-datagrid" singleSelect="true"
 				   fitColumns="true" pagination="true" rownumbers="true"
-				   url="/admin/goods/listNoInventoryQuantity" fit="true" toolbar="#tb">
+				   url="/admin/goods/otherList" fit="true" toolbar="#tb">
 				   <thead>
 				   	<tr>
 				   		<th field="id" width="20" align="center">编号</th>
@@ -162,18 +184,25 @@
 		 	</div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 		 </div>
 </div>
+
+-->
 <div data-options="region:'center'">
 	<table id="dg2" title="期初库存" class="easyui-datagrid" singleSelect="true"
 				   fitColumns="true" pagination="true" rownumbers="true"
-				   url="/admin/goods/listHasInventoryQuantity" fit="true" toolbar="#tb2">
+				   url="/admin/goods/otherList" fit="true" toolbar="#tb2">
 				   <thead>
 				   	<tr>
 				   		<th field="id" width="20" align="center">编号</th>
 				   		<th field="code" width="30" align="center">商品编码</th>
-				   		<th field="name" width="150" align="left">商品名称</th>
+				   		<th field="name" width="50" align="left">商品名称</th>
 				   		<th field="model" width="50" align="center">型号</th>
 				   		<th field="typeName" width="50" align="center" formatter="formatGoodsTypeName">类别</th>
 				   		<th field="unit" width="30" align="center" >单位</th>
+				   		
+				   		<!-- 新增的两个字段展示-->
+				   		<th field="brand" width="30" align="center" >品牌</th>
+				   		<th field="warehouse" width="30" align="center" >仓库</th>
+				   		
 				   		<th field="inventoryQuantity" width="30" align="center" >库存数量</th>
 				   		<th field="purchasingPrice" width="30" align="center" formatter="formatPurchasingPrice">成本价</th>
 				   		<th field="amount" width="30" align="center" formatter="formatAmount">库存金额</th>
@@ -183,9 +212,49 @@
 		 <div id="tb2">
 		 	<div style="padding: 3px">
 		 		<a href="javascript:openStorageDialog(2)" class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改数量或成本价</a>
+ 				<!--
  				<a href="javascript:deleteStorage()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
-		 	</div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+		 		-->
+		 	</div>   
+		 	
+		 	
+		 	
+		 	<div>
+		 	
+		 		&nbsp;商品编码或者名称&nbsp;<input type="text" id="s_name" size="20" onkeydown="if(event.keyCode==13) searchGoods()"/>
+		 		
+		 		<!--  
+		 		&nbsp;商品类别&nbsp;
+ 				<input type="hidden" id="typeId2"/>
+ 				<input type="text" id="typeName2"  style="width: 90px;" readonly="readonly" onclick="chooseGoodsType(1, p_id, t_id)"/>		 	
+		 		 -->
+		 		 
+		 		&nbsp;规格&nbsp;
+	 			<select class="easyui-combobox" id="model2" name="model"  
+	 			style="width: 80px;" 
+	 			data-options="panelHeight:'auto',editable:true,valueField:'name',textField:'name',url:'/admin/model/comboList'">
+	 			</select>
+		 		
+		 		&nbsp;仓库&nbsp;
+	 			<select class="easyui-combobox" id="warehouse2" name="warehouse"  
+	 			style="width: 120px;" 
+	 			data-options="panelHeight:'auto',editable:true,valueField:'name',textField:'name',url:'/admin/warehouse/comboList'">
+	 			</select>
+		 		
+		 		
+				&nbsp;品牌&nbsp;
+	 			<select class="easyui-combobox" id="brand2" name="brand"  
+	 			style="width: 120px;" 
+	 			data-options="panelHeight:'auto',editable:true,valueField:'name',textField:'name',url:'/admin/brand/comboList'">
+	 			</select>
+	 				 		
+		 		
+		 		<a href="javascript:searchGoods()" class="easyui-linkbutton" 
+		 		iconCls="icon-search" plain="true">搜索</a>
+		 	</div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 		 </div>
+		 
+		 
 </div>
 
 <div id="dlg" class="easyui-dialog" style="width:450px;height:250px;padding: 5px 5px"

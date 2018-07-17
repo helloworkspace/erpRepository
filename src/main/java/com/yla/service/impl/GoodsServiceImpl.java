@@ -56,6 +56,20 @@ public class GoodsServiceImpl implements GoodsService {
 					if(goods.getType()!=null && goods.getType().getId()!=null && goods.getType().getId()!=1){
 						predicate.getExpressions().add(cb.equal(root.get("type").get("id"), goods.getType().getId()));
 					}
+					//按品牌搜索
+					if(StringUtil.isNotEmpty(goods.getBrand())){
+						predicate.getExpressions().add(cb.like(root.get("brand"), "%"+goods.getBrand().trim()+"%"));
+					}
+					//按仓库搜索
+					if(StringUtil.isNotEmpty(goods.getWarehouse())){
+						predicate.getExpressions().add(cb.like(root.get("warehouse"), "%"+goods.getWarehouse().trim()+"%"));
+					}
+					
+					//按规格搜索
+					if(StringUtil.isNotEmpty(goods.getModel())){
+						predicate.getExpressions().add(cb.like(root.get("model"), "%"+goods.getModel().trim()+"%"));
+					}
+					
 					if(StringUtil.isNotEmpty(goods.getCodeOrName())){
 						predicate.getExpressions().add(cb.or(cb.like(root.get("code"),"%"+goods.getCodeOrName()+"%"), cb.like(root.get("name"),"%"+goods.getCodeOrName()+"%")));
 					}

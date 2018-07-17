@@ -11,65 +11,70 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yla.entity.Brand;
+import com.yla.entity.Warehouse;
 import com.yla.entity.Log;
-import com.yla.service.BrandService;
+import com.yla.service.WarehouseService;
 import com.yla.service.LogService;
 
 /**
- * 后台管理商品品牌Controller
- * @author yla
+ * 后台管理商品仓库Controller
+ * @author yla 小锋 老师
  *
  */
 @RestController
-@RequestMapping("/admin/brand")
-public class BrandAdminController {
+@RequestMapping("/admin/warehouse")
+public class WarehouseAdminController {
 
 	@Resource
-	private BrandService brandService;
+	private WarehouseService warehouseService;
 	
 	@Resource
 	private LogService logService;
 	
 	@RequestMapping("/comboList")		//显示下拉框列表
 	@RequiresPermissions(value = { "商品管理" })
-	public List<Brand> comboList()throws Exception{
-		return brandService.listAll();
+	public List<Warehouse> comboList()throws Exception{
+		return warehouseService.listAll();
 	}
 	
 	/**
-	 * 查询所有商品品牌
+	 * 查询所有商品仓库
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/listAll")				//显示品牌的那个表
+	@RequestMapping("/listAll")				//显示仓库的那个表
 	@RequiresPermissions(value = { "商品管理","进货入库"},logical=Logical.OR)
 	public Map<String,Object> listAll()throws Exception{
-		List<Brand> brandList=brandService.listAll();
+		List<Warehouse> warehouseList=warehouseService.listAll();
 		Map<String, Object> resultMap = new HashMap<>();
-		resultMap.put("rows", brandList);
-		logService.save(new Log(Log.SEARCH_ACTION,"查询商品品牌信息")); // 写入日志
+		resultMap.put("rows", warehouseList);
+		logService.save(new Log(Log.SEARCH_ACTION,"查询商品仓库信息")); // 写入日志
+		/**
+		 * 注意注意
+		 * 仓库要改成真正改变的，不然日志出错
+		 */
+		
 		return resultMap;
 	}
 	
 	/**
-	 * 添加商品品牌
-	 * @param brand
+	 * 添加商品仓库
+	 * @param warehouse
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping("/save")
 	@RequiresPermissions(value = { "商品管理","进货入库"},logical=Logical.OR)
-	public Map<String,Object> save(Brand brand)throws Exception{
+	public Map<String,Object> save(Warehouse warehouse)throws Exception{
 		Map<String, Object> resultMap = new HashMap<>();
-		logService.save(new Log(Log.ADD_ACTION,"添加商品品牌信息"+brand)); 
-		brandService.save(brand);
+		logService.save(new Log(Log.ADD_ACTION,"添加商品仓库信息"+warehouse)); 
+		warehouseService.save(warehouse);
 		resultMap.put("success", true);
 		return resultMap;
 	}
 	
 	/**
-	 * 删除商品品牌信息
+	 * 删除商品仓库信息
 	 * @param id
 	 * @param response
 	 * @return
@@ -79,8 +84,8 @@ public class BrandAdminController {
 	@RequiresPermissions(value = { "商品管理","进货入库"},logical=Logical.OR)
 	public Map<String,Object> delete(Integer id)throws Exception{
 		Map<String, Object> resultMap = new HashMap<>();
-		logService.save(new Log(Log.DELETE_ACTION,"删除商品品牌信息"+brandService.findById(id)));  // 写入日志
-		brandService.delete(id);				
+		logService.save(new Log(Log.DELETE_ACTION,"删除商品仓库信息"+warehouseService.findById(id)));  // 写入日志
+		warehouseService.delete(id);				
 		resultMap.put("success", true);
 		return resultMap;
 	}

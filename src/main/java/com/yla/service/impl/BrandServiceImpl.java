@@ -10,9 +10,10 @@ import com.yla.entity.Brand;
 import com.yla.repository.BrandRepository;
 import com.yla.service.BrandService;
 
+
 /**
- * 商品单位Service实现类
- * @author yla 小锋 老师
+ * 商品规格Service实现类
+ * @author yla
  *
  */
 @Service("brandService")
@@ -27,8 +28,8 @@ public class BrandServiceImpl implements BrandService{
 	}
 
 	@Override
-	public void save(Brand brand) {
-		brandRepository.save(brand);
+	public void save(Brand Brand) {
+		brandRepository.save(Brand);
 	}
 
 	@Override

@@ -22,7 +22,7 @@ public interface BrandService {
 	 * 修改或者修改商品品牌信息
 	 * @param goods
 	 */
-	public void save(Brand brand);
+	public void save(Brand goodsUnit);
 	
 	/**
 	 * 根据id删除商品品牌
